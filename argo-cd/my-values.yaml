@@ -126,6 +126,19 @@ server:
 
   rbacConfig:
     policy.default: role:readonly
+    policy.csv: |
+      p, role:developer-role, projects, get, tsmc-nycu-lab-13, allow
+      p, role:developer-role, applications, get, tsmc-nycu-lab-13/*, allow
+      p, role:developer-role, applications, sync, tsmc-nycu-lab-13/*, allow
+      p, role:developer-role, applications, create, tsmc-nycu-lab-13/*, allow
+      p, role:developer-role, applications, update, tsmc-nycu-lab-13/*, allow
+      p, role:developer-role, applications, override, tsmc-nycu-lab-13/*, allow
+      p, role:developer-role, repositories, create, tsmc-nycu-lab-13/*, allow
+      p, role:developer-role, repositories, update, tsmc-nycu-lab-13/*, allow
+
+      g, TSMC-NYCU-LAB-13:Developer, role:developer-role
+      g, TSMC-NYCU-LAB-13:Maintainer, role:admin
+
 
   additionalApplications:
   - name: argocd
@@ -384,19 +397,19 @@ server:
       kind: LimitRange
     - group: ""
       kind: NetworkPolicy
-    roles:
-    - name: read-only
-      description: Read-only privileges to tsmc-nycu-lab-13
-      policies:
-      - p, proj:tsmc-nycu-lab-13:read-only, applications, get, */*, allow
-      groups:
-        - TSMC-NYCU-LAB-13:Developer
-    - name: ci-role
-      description: Sync privileges for tsmc-nycu-lab-13
-      policies:
-      - p, proj:tsmc-nycu-lab-13:ci-role, applications, sync, */*, allow
-      groups:
-        - TSMC-NYCU-LAB-13:Maintainer
+    # roles:
+    # - name: read-only
+    #   description: Read-only privileges to tsmc-nycu-lab-13
+    #   policies:
+    #   - p, proj:tsmc-nycu-lab-13:read-only, applications, get, tsmc-nycu-lab-13/*, allow
+    #   groups:
+    #     - TSMC-NYCU-LAB-13:Developer
+    # - name: ci-role
+    #   description: Sync privileges for tsmc-nycu-lab-13
+    #   policies:
+    #   - p, proj:tsmc-nycu-lab-13:ci-role, applications, sync, tsmc-nycu-lab-13/*, allow
+    #   groups:
+    #     - TSMC-NYCU-LAB-13:Maintainer
 
 repoServer:
   podLabels:
