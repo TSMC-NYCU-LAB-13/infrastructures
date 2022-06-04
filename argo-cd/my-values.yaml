@@ -382,6 +382,8 @@ server:
       server: https://kubernetes.default.svc
     - namespace: "istio-system"
       server: https://kubernetes.default.svc
+    - namespace: "crawlab"
+      server: https://kubernetes.default.svc
     - namespace: "kube-system"
       server: https://kubernetes.default.svc
     clusterResourceWhitelist:
