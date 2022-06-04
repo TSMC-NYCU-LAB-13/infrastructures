@@ -1,0 +1,105 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: jaeger-tracing-query-gateway
+  namespace: istio-system
+spec:
+  selector:
+    istio: ingress
+  servers:
+  - port:
+      number: 80
+      name: http-tracing
+      protocol: HTTP
+    hosts:
+    - "jaeger-tracing-query.cwang.one"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: jaeger-tracing-query-vs
+  namespace: istio-system
+spec:
+  hosts:
+  - "jaeger-tracing-query.cwang.one"
+  gateways:
+  - jaeger-tracing-query-gateway
+  http:
+  - route:
+    - destination:
+        host: jaeger-tracing-query.monitoring.svc.cluster.local
+        port:
+          number: 80
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: jaeger-tracing-query
+  namespace: istio-system
+spec:
+  host: jaeger-tracing-query.monitoring.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: DISABLE
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: tracing
+#   namespace: istio-system
+#   labels:
+#     app: jaeger
+# spec:
+#   type: ClusterIP
+#   ports:
+#     - name: http-query
+#       port: 80
+#       protocol: TCP
+#       targetPort: 16686
+#     # Note: Change port name if you add '--query.grpc.tls.enabled=true'
+#     - name: grpc-query
+#       port: 16685
+#       protocol: TCP
+#       targetPort: 16685
+#   selector:
+#     app: jaeger
+# ---
+# # Jaeger implements the Zipkin API. To support swapping out the tracing backend, we use a Service named Zipkin.
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   labels:
+#     name: zipkin
+#   name: zipkin
+#   namespace: istio-system
+# spec:
+#   ports:
+#     - port: 9411
+#       targetPort: 9411
+#       name: http-query
+#   selector:
+#     app: jaeger
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: jaeger-collector
+#   namespace: istio-system
+#   labels:
+#     app: jaeger
+# spec:
+#   type: ClusterIP
+#   ports:
+#   - name: jaeger-collector-http
+#     port: 14268
+#     targetPort: 14268
+#     protocol: TCP
+#   - name: jaeger-collector-grpc
+#     port: 14250
+#     targetPort: 14250
+#     protocol: TCP
+#   - port: 9411
+#     targetPort: 9411
+#     name: http-zipkin
+#   selector:
+#     app: jaeger

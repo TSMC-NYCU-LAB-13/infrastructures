@@ -1,0 +1,443 @@
+# kubectl label namespaces argocd istio-injection=enabled
+namespace: argocd
+
+global:
+  podAnnotations: {}
+  podLabels: 
+    sidecar.istio.io/inject: "true"
+
+controller:
+  podLabels:
+    app: argocd-application-controller
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+    rules:
+      enabled: true
+      spec:
+      - alert: ArgoAppMissing
+        expr: |
+          absent(argocd_app_info)
+        for: 15m
+        labels:
+          severity: critical
+        annotations:
+          summary: "[Argo CD] No reported applications"
+          description: >
+            Argo CD has not reported any applications data for the past 15 minutes which
+            means that it must be down or not functioning properly.  This needs to be
+            resolved for this cloud to continue to maintain state.
+      - alert: ArgoAppNotSynced
+        expr: |
+          argocd_app_info{sync_status!="Synced"} == 1
+        for: 12h
+        labels:
+          severity: warning
+        annotations:
+          summary: "[{{`{{$labels.name}}`}}] Application not synchronized"
+          description: >
+            The application [{{`{{$labels.name}}`}} has not been synchronized for over
+            12 hours which means that the state of this cloud has drifted away from the
+            state inside Git.
+      selector:
+        prometheus: kube-prometheus
+      namespace: monitoring
+
+## Dex
+dex:
+  podLabels:
+    app: argocd-dex-server
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+
+## Redis
+redis:
+  podLabels:
+    app: argocd-redis
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+
+server:
+
+  podLabels:
+    app: argocd-server
+
+  extraArgs:
+   - --insecure
+
+  # service:
+  #   annotation:
+  #     cloud.google.com/neg: 
+  #       ingress: true
+  #   type: LoadBalancer
+
+  # ingress:
+  #   enabled: true
+  #   https: true
+  #   hosts:
+  #     - argocd.cwang.one
+  #   annotations:
+  #     kubernetes.io/ingress.global-static-ip-name: default-ip
+
+  # GKEbackendConfig:
+  #   enabled: true
+
+  # GKEfrontendConfig:
+  #   enabled: true
+
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+
+  config:
+    url: http://argocd.cwang.one
+    statusbadge.enabled: "true"
+    users.anonymous.enabled: "true"
+    users.session.duration: "24h"
+    dex.config: |
+      connectors:
+        - type: github
+          id: github
+          name: GitHub
+          config:
+            clientID: 3e516b8b4b0b569f1a69
+            clientSecret: c39f23506f52a87737afa64a43c8bb191702785a
+            orgs:
+            - name: TSMC-NYCU-LAB-13
+      staticClients:
+        - id: kiali-client
+          secret: kiali-client-secret
+          name: kiali-client
+          redirectURIs:
+          - http://kiali.cwang.one/kiali
+        - id: postman-client
+          secret: postman-client-secret
+          name: postman-client
+          redirectURIs:
+          - https://oauth.pstmn.io/v1/callback
+    application.instanceLabelKey: argocd.argoproj.io/instance
+
+
+  rbacConfig:
+    policy.default: role:readonly
+
+  additionalApplications:
+  - name: argocd
+    namespace: argocd
+    project: tsmc-nycu-lab-13
+    source:
+      repoURL: https://github.com/TSMC-NYCU-LAB-13/infrastructures.git
+      targetRevision: HEAD
+      path: argo-cd
+      helm:
+        valueFiles:
+        - my-values.yaml
+    destination:
+      server: https://kubernetes.default.svc
+      namespace: argocd
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
+        allowEmpty: false
+    syncOptions: 
+    - CreateNamespace=true
+    # - PruneLast=true # Allow the ability for resource pruning to happen as a final, implicit wave of a sync operation
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+
+  - name: kube-prometheus-stack
+    namespace: argocd
+    project: tsmc-nycu-lab-13
+    source:
+      repoURL: https://github.com/TSMC-NYCU-LAB-13/infrastructures.git
+      targetRevision: HEAD
+      path: monitoring/prometheus/kube-prometheus-stack
+      helm:
+        releaseName: kube-prometheus-stack
+        valueFiles:
+        - my-values.yaml
+    destination:
+      server: https://kubernetes.default.svc
+      namespace: monitoring
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
+        allowEmpty: false
+    syncOptions: 
+    - CreateNamespace=true
+    # # https://github.com/prometheus-community/helm-charts/pull/1510#issuecomment-1007542461
+    # - ApplyOutOfSyncOnly=true
+    # - Replace=true
+  
+  - name: jaeger-tracing
+    namespace: argocd
+    project: tsmc-nycu-lab-13
+    source:
+      repoURL: https://github.com/TSMC-NYCU-LAB-13/infrastructures.git
+      targetRevision: HEAD
+      path: monitoring/tracing/jaeger
+      helm:
+        releaseName: jaeger-tracing
+        valueFiles:
+        - my-values.yaml
+    destination:
+      server: https://kubernetes.default.svc
+      namespace: monitoring
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
+        allowEmpty: false
+    syncOptions: 
+    - CreateNamespace=true
+
+  - name: kiali-operator
+    namespace: argocd
+    project: tsmc-nycu-lab-13
+    source:
+      repoURL: https://github.com/TSMC-NYCU-LAB-13/infrastructures.git
+      targetRevision: HEAD
+      path: monitoring/kiali-operator
+      helm:
+        releaseName: kiali-operator
+        valueFiles:
+        - my-values.yaml
+    destination:
+      server: https://kubernetes.default.svc
+      namespace: monitoring
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
+        allowEmpty: false
+    syncOptions: 
+    - CreateNamespace=true
+
+  - name: istio-base
+    namespace: argocd
+    project: tsmc-nycu-lab-13
+    source:
+      repoURL: https://github.com/TSMC-NYCU-LAB-13/infrastructures.git
+      targetRevision: HEAD
+      path: network/istio/base
+      helm:
+        releaseName: istio-base
+        valueFiles:
+        - my-values.yaml
+    destination:
+      server: https://kubernetes.default.svc
+      namespace: istio-system
+    # https://github.com/argoproj/argo-cd/issues/4276
+    ignoreDifferences:
+    - group: admissionregistration.k8s.io
+      kind: ValidatingWebhookConfiguration
+      name: istiod-default-validator
+      jqPathExpressions:
+        - .webhooks[].failurePolicy
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
+        allowEmpty: false
+    syncOptions: 
+    - CreateNamespace=true
+
+  - name: istiod
+    namespace: argocd
+    project: tsmc-nycu-lab-13
+    source:
+      repoURL: https://github.com/TSMC-NYCU-LAB-13/infrastructures.git
+      targetRevision: HEAD
+      path: network/istio/istiod
+      helm:
+        releaseName: istiod
+        valueFiles:
+        - my-values.yaml
+    destination:
+      server: https://kubernetes.default.svc
+      namespace: istio-system
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
+        allowEmpty: false
+    syncOptions: 
+    - CreateNamespace=true
+
+  - name: istio-ingress
+    namespace: argocd
+    project: tsmc-nycu-lab-13
+    source:
+      repoURL: https://github.com/TSMC-NYCU-LAB-13/infrastructures.git
+      targetRevision: HEAD
+      path: network/istio/gateway
+      helm:
+        releaseName: istio-ingress
+        valueFiles:
+        - my-values.yaml
+    destination:
+      server: https://kubernetes.default.svc
+      namespace: istio-system
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
+        allowEmpty: false
+    syncOptions: 
+    - CreateNamespace=true
+
+  - name: prometheus-stack-manifest
+    namespace: argocd
+    project: tsmc-nycu-lab-13
+    source:
+      repoURL: https://github.com/TSMC-NYCU-LAB-13/infrastructures.git
+      targetRevision: HEAD
+      path: monitoring/prometheus/manifest
+      directory:
+        recurse: true
+    destination:
+      server: https://kubernetes.default.svc
+      namespace: monitoring
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
+        allowEmpty: false
+
+  - name: istio-manifest
+    namespace: argocd
+    project: tsmc-nycu-lab-13
+    source:
+      repoURL: https://github.com/TSMC-NYCU-LAB-13/infrastructures.git
+      targetRevision: HEAD
+      path: network/istio/manifest
+      directory:
+        recurse: true
+    destination:
+      server: https://kubernetes.default.svc
+      namespace: istio-system
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
+        allowEmpty: false
+
+  # - name: crawlab-manifest
+  #   namespace: argocd
+  #   project: tsmc-nycu-lab-13
+  #   source:
+  #     repoURL: https://github.com/TSMC-NYCU-LAB-13/infrastructures.git
+  #     targetRevision: HEAD
+  #     path: crawlab
+  #     directory:
+  #       recurse: true
+  #   destination:
+  #     server: https://kubernetes.default.svc
+  #     namespace: crawlab
+  #   syncPolicy:
+  #     automated:
+  #       prune: true
+  #       selfHeal: true
+  #       allowEmpty: false
+
+  additionalProjects:
+  - name: tsmc-nycu-lab-13
+    namespace: argocd
+    finalizers:
+    - resources-finalizer.argocd.argoproj.io
+    description: tsmc-nycu-lab-13's resources
+    sourceRepos:
+    - "https://github.com/TSMC-NYCU-LAB-13/infrastructures.git"
+    destinations:
+    - namespace: "monitoring"
+      server: https://kubernetes.default.svc
+    - namespace: "argocd"
+      server: https://kubernetes.default.svc
+    - namespace: "istio-system"
+      server: https://kubernetes.default.svc
+    - namespace: "kube-system"
+      server: https://kubernetes.default.svc
+    clusterResourceWhitelist:
+    - group: "*"
+      kind: "*"
+    namespaceResourceWhitelist:
+    - group: "*"
+      kind: "*"
+    namespaceResourceBlacklist:
+    - group: ""
+      kind: ResourceQuota
+    - group: ""
+      kind: LimitRange
+    - group: ""
+      kind: NetworkPolicy
+    roles:
+    - name: read-only
+      description: Read-only privileges to tsmc-nycu-lab-13
+      policies:
+      - p, proj:tsmc-nycu-lab-13:read-only, applications, get, */*, allow
+      groups:
+        - TSMC-NYCU-LAB-13:Developer
+    - name: ci-role
+      description: Sync privileges for tsmc-nycu-lab-13
+      policies:
+      - p, proj:tsmc-nycu-lab-13:ci-role, applications, sync, */*, allow
+      groups:
+        - TSMC-NYCU-LAB-13:Maintainer
+
+repoServer:
+  podLabels:
+    app: argocd-repo-server
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+
+applicationSet:
+  podLabels:
+    app: argocd-applicationset-controller
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+
+notifications:
+  podLabels:
+    app: argocd-notifications-controller
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+
+configs:
+  knownHosts:
+    data:
+      ssh_known_hosts: |
+        bitbucket.org ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAubiN81eDcafrgMeLzaFPsw2kNvEcqTKl/VqLat/MaB33pZy0y3rJZtnqwR2qOOvbwKZYKiEO1O6VqNEBxKvJJelCq0dTXWT5pbO2gDXC6h6QDXCaHo6pOHGPUy+YBaGQRGuSusMEASYiWunYN0vCAI8QaXnWMXNMdFP3jHAJH0eDsoiGnLPBlBp4TNm6rYI74nMzgz3B9IikW4WVK+dc8KZJZWYjAuORU3jc1c/NPskD2ASinf8v3xnfXeukU0sJ5N6m5E8VLjObPEO+mN2t/FZTMZLiFqPWc/ALSqnMnnhwrNi2rbfg/rd/IpL8Le3pSBne8+seeFVBoGqzHM9yXw==
+        github.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEmKSENjQEezOmxkZMy7opKgwFB9nkt5YRrYMjNuG5N87uRgg6CLrbo5wAdT/y6v0mKV0U2w0WZ2YB/++Tpockg=
+        github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl
+        github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ==
+        gitlab.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBFSMqzJeV9rUzU4kWitGjeR4PWSa29SPqJ1fVkhtj3Hw9xjLVXVYrU9QlYWrOLXBpQ6KWjbjTDTdDkoohFzgbEY=
+        gitlab.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAfuCHKVTjquxvt6CM6tdG4SLp1Btn/nOeHHE5UOzRdf
+        gitlab.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCsj2bNKTBSpIYDEGk9KxsGh3mySTRgMtXL583qmBpzeQ+jqCMRgBqB98u3z++J1sKlXHWfM9dyhSevkMwSbhoR8XIq/U0tCNyokEi/ueaBMCvbcTHhO7FcwzY92WK4Yt0aGROY5qX2UKSeOvuP4D6TPqKF1onrSzH9bx9XUf2lEdWT/ia1NEKjunUqu1xOB/StKDHMoX4/OKyIzuS0q/T1zOATthvasJFoPrAjkohTyaDUz2LN5JoH839hViyEG82yB+MjcFV5MU3N1l1QL3cVUCh93xSaua1N85qivl+siMkPGbO5xR/En4iEY6K2XPASUEMaieWVNTRCtJ4S8H+9
+        ssh.dev.azure.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7Hr1oTWqNqOlzGJOfGJ4NakVyIzf1rXYd4d7wo6jBlkLvCA4odBlL0mDUyZ0/QUfTTqeu+tm22gOsv+VrVTMk6vwRU75gY/y9ut5Mb3bR5BV58dKXyq9A9UeB5Cakehn5Zgm6x1mKoVyf+FFn26iYqXJRgzIZZcZ5V6hrE0Qg39kZm4az48o0AUbf6Sp4SLdvnuMa2sVNwHBboS7EJkm57XQPVU3/QpyNLHbWDdzwtrlS+ez30S3AdYhLKEOxAG8weOnyrtLJAUen9mTkol8oII1edf7mWWbWVf0nBmly21+nZcmCTISQBtdcyPaEno7fFQMDD26/s0lfKob4Kw8H
+        vs-ssh.visualstudio.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7Hr1oTWqNqOlzGJOfGJ4NakVyIzf1rXYd4d7wo6jBlkLvCA4odBlL0mDUyZ0/QUfTTqeu+tm22gOsv+VrVTMk6vwRU75gY/y9ut5Mb3bR5BV58dKXyq9A9UeB5Cakehn5Zgm6x1mKoVyf+FFn26iYqXJRgzIZZcZ5V6hrE0Qg39kZm4az48o0AUbf6Sp4SLdvnuMa2sVNwHBboS7EJkm57XQPVU3/QpyNLHbWDdzwtrlS+ez30S3AdYhLKEOxAG8weOnyrtLJAUen9mTkol8oII1edf7mWWbWVf0nBmly21+nZcmCTISQBtdcyPaEno7fFQMDD26/s0lfKob4Kw8H
+
+  repositories:
+    repo:
+      url: https://github.com/TSMC-NYCU-LAB-13/infrastructures.git
+
