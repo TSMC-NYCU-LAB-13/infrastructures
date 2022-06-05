@@ -477,6 +477,9 @@ repoServer:
     enabled: true
     serviceMonitor:
       enabled: true
+  resources:
+    requests:
+      memory: "256M"
 
 applicationSet:
   podLabels:
