@@ -668,7 +668,7 @@ grafana:
 
   grafana.ini:
     server:
-      root_url: http://grafana.cwang.one
+      root_url: https://grafana.cwang.one
     auth.generic_oauth:
       enabled: true
       name: Grafana DEX OAUTH
@@ -680,10 +680,10 @@ grafana:
       login_attribute_path: name
       name_attribute_path: name
       #id_token_attribute_name:
-      auth_url: http://argocd.cwang.one/api/dex/auth
-      token_url: http://argocd.cwang.one/api/dex/token
-      api_url: http://argocd.cwang.one/api/dex/userinfo
-      tls_skip_verify_insecure: true
+      auth_url: https://argocd.cwang.one/api/dex/auth
+      token_url: https://argocd.cwang.one/api/dex/token
+      api_url: https://argocd.cwang.one/api/dex/userinfo
+      # tls_skip_verify_insecure: true
 
   ## ForceDeployDatasources Create datasource configmap even if grafana deployment has been disabled
   ##

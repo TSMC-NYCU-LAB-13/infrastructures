@@ -120,7 +120,7 @@ server:
           secret: grafana-client-secret
           name: grafana-client
           redirectURIs:
-          - http://grafana.cwang.one/login/generic_oauth
+          - https://grafana.cwang.one/login/generic_oauth
         - id: postman-client
           secret: postman-client-secret
           name: postman-client
