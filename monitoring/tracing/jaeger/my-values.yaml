@@ -108,7 +108,10 @@ cassandra:
     app.kubernetes.io/name: cassandra
   persistence:
     # To enable persistence, please see the documentation for the Cassandra chart
-    enabled: false
+    enabled: true
+    storageClass: premium-rwo
+    accessMode: ReadWriteOnce
+    size: 100Gi
   config:
     cluster_name: jaeger
     seed_size: 1
