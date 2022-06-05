@@ -13,6 +13,18 @@ spec:
       protocol: HTTP
     hosts:
     - "argocd.cwang.one"
+    tls:
+      httpsRedirect: true
+  - port:
+      number: 443
+      name: https-argocd
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: istio-ingress-certs
+      minProtocolVersion: TLSV1_3
+    hosts:
+    - "argocd.cwang.one"
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -29,7 +41,7 @@ spec:
     - destination:
         host: argocd-server.argocd.svc.cluster.local
         port:
-          number: 443
+          number: 80
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule

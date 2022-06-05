@@ -96,7 +96,7 @@ server:
       enabled: true
 
   config:
-    url: http://argocd.cwang.one
+    url: https://argocd.cwang.one
     statusbadge.enabled: "true"
     users.anonymous.enabled: "true"
     users.session.duration: "24h"
