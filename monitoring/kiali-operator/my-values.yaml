@@ -142,11 +142,11 @@ cr:
       prometheus:
         url: "http://prometheus-operated.monitoring.svc.cluster.local:9090"
       grafana:
-        auth:
-          type: basic
-          insecure_skip_verify: true
-          password: "prom-operator"
-          username: "admin"
+        # auth:
+        #   type: basic
+        #   insecure_skip_verify: true
+        #   password: "prom-operator"
+        #   username: "admin"
         dashboards:
         - name: "Istio Service Dashboard"
           variables:
