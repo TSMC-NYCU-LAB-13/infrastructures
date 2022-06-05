@@ -85,8 +85,9 @@ cr:
     #   version_label_name: "app.kubernetes.io/version"
     server:
       web_fqdn: kiali.cwang.one
-      web_port: 80
+      web_port: 443
     deployment:
+      view_only_mode: true
       accessible_namespaces:
       - '**'
       pod_labels:
@@ -94,15 +95,16 @@ cr:
 
       # verbose_mode: "4"
     auth:
-      strategy: openid
-      openid:
-        # kubectl create secret generic kiali --from-literal="oidc-secret=kiali-client-secret" -n monitoring
-        client_id: kiali-client
-        issuer_uri: http://argocd.cwang.one/api/dex
-        disable_rbac: true
-        insecure_skip_verify_tls: true
-        username_claim: email
-        scopes: ["openid", "profile", "email", "groups"]
+      strategy: anonymous
+      # strategy: openid
+      # openid:
+      #   # kubectl create secret generic kiali --from-literal="oidc-secret=kiali-client-secret" -n monitoring
+      #   client_id: kiali-client
+      #   issuer_uri: https://argocd.cwang.one/api/dex
+      #   disable_rbac: true
+      #   insecure_skip_verify_tls: true
+      #   username_claim: email
+      #   scopes: ["openid", "profile", "email", "groups"]
     external_services:
       istio:
         istio_component_namespaces:
@@ -162,7 +164,7 @@ cr:
         health_check_url: ""
         in_cluster_url: "http://kube-prometheus-stack-grafana.monitoring.svc.cluster.local"
         is_core: false
-        url: "http://grafana.cwang.one"
+        url: "https://grafana.cwang.one"
       tracing:
         enabled: true
         auth:
@@ -170,7 +172,7 @@ cr:
         in_cluster_url: "http://jaeger-tracing-query.monitoring.svc.cluster.local:16685"
         # in_cluster_url: "http://jaeger-tracing-query.monitoring.svc.cluster.local"
         is_core: false
-        url: "http://jaeger-tracing-query.cwang.one"
+        url: "https://jaeger-tracing-query.cwang.one"
         # use_grpc: false
         # whitelist_istio_system: ["jaeger-query", "jaeger-tracing-query", "istio-ingress"]
         namespace_selector: true

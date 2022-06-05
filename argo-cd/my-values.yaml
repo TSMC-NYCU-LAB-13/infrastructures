@@ -115,7 +115,7 @@ server:
           secret: kiali-client-secret
           name: kiali-client
           redirectURIs:
-          - http://kiali.cwang.one/kiali
+          - https://kiali.cwang.one/kiali
         - id: grafana-client
           secret: grafana-client-secret
           name: grafana-client
