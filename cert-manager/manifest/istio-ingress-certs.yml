@@ -1,0 +1,14 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: istio-ingress-certs
+  namespace: istio-system
+spec:
+  secretName: istio-ingress-certs
+  commonName: "*.cwang.one"
+  dnsNames:
+    - "*.cwang.one"
+  issuerRef:
+    name: letsencrypt-prod
+    # name: letsencrypt-test
+    kind: ClusterIssuer

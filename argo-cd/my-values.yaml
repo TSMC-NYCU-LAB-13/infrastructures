@@ -316,6 +316,35 @@ server:
     syncOptions: 
     - CreateNamespace=true
 
+  - name: cert-manager
+    namespace: argocd
+    project: tsmc-nycu-lab-13
+    source:
+      repoURL: https://github.com/TSMC-NYCU-LAB-13/infrastructures.git
+      targetRevision: HEAD
+      path: cert-manager/cert-manager
+      helm:
+        releaseName: cert-manager
+        valueFiles:
+        - my-values.yaml
+    destination:
+      server: https://kubernetes.default.svc
+      namespace: cert-manager
+    # https://github.com/argoproj/argo-cd/issues/4276
+    ignoreDifferences:
+      - group: admissionregistration.k8s.io
+        kind: ValidatingWebhookConfiguration
+        name: cert-manager-webhook
+        jqPathExpressions:
+          - .webhooks[].namespaceSelector.matchExpressions[] | select(.key == "control-plane")
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
+        allowEmpty: false
+    syncOptions: 
+    - CreateNamespace=true
+
   - name: prometheus-stack-manifest
     namespace: argocd
     project: tsmc-nycu-lab-13
@@ -372,6 +401,24 @@ server:
     syncOptions: 
     - CreateNamespace=true
 
+  - name: cert-manager-manifest
+    namespace: argocd
+    project: tsmc-nycu-lab-13
+    source:
+      repoURL: https://github.com/TSMC-NYCU-LAB-13/infrastructures.git
+      targetRevision: HEAD
+      path: cert-manager/manifest
+      directory:
+        recurse: true
+    destination:
+      server: https://kubernetes.default.svc
+      namespace: cert-manager
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
+        allowEmpty: false
+
   additionalProjects:
   - name: tsmc-nycu-lab-13
     namespace: argocd
@@ -388,6 +435,8 @@ server:
     - namespace: "istio-system"
       server: https://kubernetes.default.svc
     - namespace: "crawlab"
+      server: https://kubernetes.default.svc
+    - namespace: "cert-manager"
       server: https://kubernetes.default.svc
     - namespace: "kube-system"
       server: https://kubernetes.default.svc
