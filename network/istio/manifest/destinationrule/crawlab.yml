@@ -1,0 +1,10 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: crawlab
+  namespace: istio-system
+spec:
+  host: crawlab.crawlab.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: DISABLE

@@ -1,0 +1,16 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: crawlab-vs
+  namespace: istio-system
+spec:
+  hosts:
+  - "crawlab.cwang.one"
+  gateways:
+  - gke-gateway
+  http:
+  - route:
+    - destination:
+        host: crawlab.crawlab.svc.cluster.local
+        port:
+          number: 80

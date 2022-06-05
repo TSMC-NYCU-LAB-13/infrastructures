@@ -1,32 +1,4 @@
 apiVersion: networking.istio.io/v1alpha3
-kind: Gateway
-metadata:
-  name: jaeger-tracing-query-gateway
-  namespace: istio-system
-spec:
-  selector:
-    istio: ingress
-  servers:
-  - port:
-      number: 80
-      name: http-tracing
-      protocol: HTTP
-    hosts:
-    - "jaeger-tracing-query.cwang.one"
-    tls:
-      httpsRedirect: true
-  - port:
-      number: 443
-      name: https-tracing
-      protocol: HTTPS
-    tls:
-      mode: SIMPLE
-      credentialName: istio-ingress-certs
-      minProtocolVersion: TLSV1_3
-    hosts:
-    - "tracing.cwang.one"
----
-apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name: jaeger-tracing-query-vs
@@ -35,24 +7,13 @@ spec:
   hosts:
   - "jaeger-tracing-query.cwang.one"
   gateways:
-  - jaeger-tracing-query-gateway
+  - gke-gateway
   http:
   - route:
     - destination:
         host: jaeger-tracing-query.monitoring.svc.cluster.local
         port:
           number: 80
----
-apiVersion: networking.istio.io/v1alpha3
-kind: DestinationRule
-metadata:
-  name: jaeger-tracing-query
-  namespace: istio-system
-spec:
-  host: jaeger-tracing-query.monitoring.svc.cluster.local
-  trafficPolicy:
-    tls:
-      mode: DISABLE
 # ---
 # apiVersion: v1
 # kind: Service

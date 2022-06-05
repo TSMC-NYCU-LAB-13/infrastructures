@@ -1,0 +1,10 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: jaeger-tracing-query
+  namespace: istio-system
+spec:
+  host: jaeger-tracing-query.monitoring.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: DISABLE
