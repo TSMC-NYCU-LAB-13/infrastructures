@@ -13,6 +13,18 @@ spec:
       protocol: HTTP
     hosts:
     - "crawlab.cwang.one"
+    tls:
+      httpsRedirect: true
+  - port:
+      number: 443
+      name: https-crawlab
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: istio-ingress-certs
+      minProtocolVersion: TLSV1_3
+    hosts:
+    - "crawlab.cwang.one"
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
