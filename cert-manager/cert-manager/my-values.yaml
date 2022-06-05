@@ -141,7 +141,8 @@ volumeMounts: []
 # Optional additional annotations to add to the controller Pods
 # podAnnotations: {}
 
-podLabels: {}
+podLabels: 
+  sidecar.istio.io/inject: "true"
 
 # Optional annotations to add to the controller Service
 # serviceAnnotations: {}
