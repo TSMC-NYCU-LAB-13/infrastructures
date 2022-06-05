@@ -116,6 +116,11 @@ server:
           name: kiali-client
           redirectURIs:
           - http://kiali.cwang.one/kiali
+        - id: grafana-client
+          secret: grafana-client-secret
+          name: grafana-client
+          redirectURIs:
+          - http://grafana.cwang.one/login/generic_oauth
         - id: postman-client
           secret: postman-client-secret
           name: postman-client

@@ -666,6 +666,25 @@ grafana:
     sidecar.istio.io/inject: "true"
     app: "kube-prometheus-stack-grafana"
 
+  grafana.ini:
+    server:
+      root_url: http://grafana.cwang.one
+    auth.generic_oauth:
+      enabled: true
+      name: Grafana DEX OAUTH
+      allow_sign_up: true
+      client_id: grafana-client
+      client_secret: grafana-client-secret
+      scopes: profile,groups,openid,email,offline_access
+      email_attribute_path: email
+      login_attribute_path: name
+      name_attribute_path: name
+      #id_token_attribute_name:
+      auth_url: http://argocd.cwang.one/api/dex/auth
+      token_url: http://argocd.cwang.one/api/dex/token
+      api_url: http://argocd.cwang.one/api/dex/userinfo
+      tls_skip_verify_insecure: true
+
   ## ForceDeployDatasources Create datasource configmap even if grafana deployment has been disabled
   ##
   forceDeployDatasources: false
@@ -728,26 +747,27 @@ grafana:
     #   hosts:
     #   - grafana.example.com
 
-  dashboards:
-    default:
-      "Istio Service Dashboard":
-        gnetId: 7636
-        datasource: Prometheus
-      "Istio Workload Dashboard":
-        gnetId: 7630
-        datasource: Prometheus
-      "Istio Mesh Dashboard":
-        gnetId: 7639
-        datasource: Prometheus
-      "Istio Control Plane Dashboard":
-        gnetId: 7645
-        datasource: Prometheus
-      "Istio Performance Dashboard":
-        gnetId: 11829
-        datasource: Prometheus
-      "Istio Wasm Extension Dashboard":
-        gnetId: 13277
-        datasource: Prometheus
+  # https://github.com/grafana/helm-charts/issues/1239
+  # dashboards:
+  #   default:
+  #     "Istio Service Dashboard":
+  #       gnetId: 7636
+  #       datasource: Prometheus
+  #     "Istio Workload Dashboard":
+  #       gnetId: 7630
+  #       datasource: Prometheus
+  #     "Istio Mesh Dashboard":
+  #       gnetId: 7639
+  #       datasource: Prometheus
+  #     "Istio Control Plane Dashboard":
+  #       gnetId: 7645
+  #       datasource: Prometheus
+  #     "Istio Performance Dashboard":
+  #       gnetId: 11829
+  #       datasource: Prometheus
+  #     "Istio Wasm Extension Dashboard":
+  #       gnetId: 13277
+  #       datasource: Prometheus
 
   sidecar:
     dashboards:
