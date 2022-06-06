@@ -23,10 +23,19 @@
 - kiali
 
     ```sh
-    cd monitoring/kiali-operator
+    cd monitoring
     helm repo add kiali https://kiali.org/helm-charts
     helm repo update
     helm pull --untar --version 1.51.0 kiali/kiali-operator
+    ```
+
+- grafana/loki-stack
+
+    ```sh
+    cd monitoring
+    helm repo add grafana https://grafana.github.io/helm-charts
+    helm repo update
+    helm pull --untar --version 2.6.4 grafana/loki-stack
     ```
 
 ## Install
@@ -53,4 +62,11 @@
     ```sh
     cd monitoring/kiali-operator
     helm upgrade --create-namespace --install -n monitoring kiali-operator . -f my-values.yaml
+    ```
+
+- grafana/loki-stack
+
+    ```sh
+    cd monitoring/loki-stack
+    helm upgrade --create-namespace --install -n monitoring loki-stack . -f my-values.yaml
     ```
