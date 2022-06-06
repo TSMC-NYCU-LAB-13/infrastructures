@@ -1,0 +1,60 @@
+# apiVersion: networking.istio.io/v1alpha3
+# kind: ServiceEntry
+# metadata:
+#   labels:
+#     app: mariadb-galera
+#   name: mariadb-galera-headless
+#   namespace: mariadb-galera
+# spec:
+#   hosts:
+#   - mariadb-galera-0.mariadb-galera-headless.mariadb-galera.svc.cluster.local
+#   - mariadb-galera-1.mariadb-galera-headless.mariadb-galera.svc.cluster.local
+#   - mariadb-galera-2.mariadb-galera-headless.mariadb-galera.svc.cluster.local
+#   location: MESH_INTERNAL
+#   ports:
+#   - name: tcp-sst
+#     number: 4444
+#     protocol: TCP
+#   - name: tcp-galera
+#     number: 4567
+#     protocol: TCP
+#   - name: tcp-ist
+#     number: 4568
+#     protocol: TCP
+# ---
+# apiVersion: networking.istio.io/v1alpha3
+# kind: ServiceEntry
+# metadata:
+#   labels:
+#     app: mariadb-galera
+#   name: mariadb-galera
+#   namespace: mariadb-galera
+# spec:
+#   hosts:
+#   - mariadb-galera-0.mariadb-galera.mariadb-galera.svc.cluster.local
+#   - mariadb-galera-1.mariadb-galera.mariadb-galera.svc.cluster.local
+#   - mariadb-galera-2.mariadb-galera.mariadb-galera.svc.cluster.local
+#   location: MESH_INTERNAL
+#   ports:
+#   - name: tcp-mysql
+#     number: 3306
+#     protocol: TCP
+# ---
+# apiVersion: networking.istio.io/v1alpha3
+# kind: ServiceEntry
+# metadata:
+#   labels:
+#     app: mariadb-galera
+#   name: mariadb-galera-metrics
+#   namespace: mariadb-galera
+# spec:
+#   hosts:
+#   - mariadb-galera-0.mariadb-galera-metrics.mariadb-galera.svc.cluster.local
+#   - mariadb-galera-1.mariadb-galera-metrics.mariadb-galera.svc.cluster.local
+#   - mariadb-galera-2.mariadb-galera-metrics.mariadb-galera.svc.cluster.local
+#   location: MESH_INTERNAL
+#   ports:
+#   - name: tcp-metrics
+#     number: 9104
+#     protocol: TCP
+#   resolution: NONE

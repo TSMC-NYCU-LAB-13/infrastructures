@@ -345,6 +345,28 @@ server:
     syncOptions: 
     - CreateNamespace=true
 
+  - name: mariadb-galera
+    namespace: argocd
+    project: tsmc-nycu-lab-13
+    source:
+      repoURL: https://github.com/TSMC-NYCU-LAB-13/infrastructures.git
+      targetRevision: HEAD
+      path: database/mariadb-galera
+      helm:
+        releaseName: mariadb-galera
+        valueFiles:
+        - my-values.yaml
+    destination:
+      server: https://kubernetes.default.svc
+      namespace: mariadb-galera
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
+        allowEmpty: false
+    syncOptions: 
+    - CreateNamespace=true
+
   - name: prometheus-stack-manifest
     namespace: argocd
     project: tsmc-nycu-lab-13
@@ -437,6 +459,8 @@ server:
     - namespace: "crawlab"
       server: https://kubernetes.default.svc
     - namespace: "cert-manager"
+      server: https://kubernetes.default.svc
+    - namespace: "mariadb-galera"
       server: https://kubernetes.default.svc
     - namespace: "kube-system"
       server: https://kubernetes.default.svc

@@ -1,0 +1,12 @@
+# apiVersion: networking.istio.io/v1alpha3
+# kind: DestinationRule
+# metadata:
+#   labels:
+#     app: mariadb-galera
+#   name: mariadb-galera
+#   namespace: mariadb-galera
+# spec:
+#   host: '*.mariadb-galera-headless.mariadb-galera.svc.cluster.local'
+#   trafficPolicy:
+#     tls:
+#       mode: DISABLE
