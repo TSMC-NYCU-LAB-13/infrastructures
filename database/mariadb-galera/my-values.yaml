@@ -948,8 +948,9 @@ metrics:
        annotations:
          message: 'MariaDB instance {{ $labels.instance }} is down'
          summary: MariaDB instance is down
-       expr: absent(up{job="mariadb-galera"} == 1)
+       # Fix mariadb-galera to mariadb-galera-metrics
+       expr: absent(up{job="mariadb-galera-metrics"} == 1)
        labels:
          severity: warning
-         service: mariadb-galera
+         service: mariadb-galera-metrics
        for: 5m
