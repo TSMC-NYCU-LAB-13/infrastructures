@@ -367,6 +367,28 @@ server:
     syncOptions: 
     - CreateNamespace=true
 
+  - name: rabbitmq
+    namespace: argocd
+    project: tsmc-nycu-lab-13
+    source:
+      repoURL: https://github.com/TSMC-NYCU-LAB-13/infrastructures.git
+      targetRevision: HEAD
+      path: queue/rabbitmq
+      helm:
+        releaseName: rabbitmq
+        valueFiles:
+        - my-values.yaml
+    destination:
+      server: https://kubernetes.default.svc
+      namespace: rabbitmq
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
+        allowEmpty: false
+    syncOptions: 
+    - CreateNamespace=true
+
   - name: prometheus-stack-manifest
     namespace: argocd
     project: tsmc-nycu-lab-13
@@ -481,6 +503,8 @@ server:
     - namespace: "cert-manager"
       server: https://kubernetes.default.svc
     - namespace: "mariadb-galera"
+      server: https://kubernetes.default.svc
+    - namespace: "rabbitmq"
       server: https://kubernetes.default.svc
     - namespace: "kube-system"
       server: https://kubernetes.default.svc

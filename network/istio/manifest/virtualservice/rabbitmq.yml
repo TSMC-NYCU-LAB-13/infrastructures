@@ -1,0 +1,16 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: rabbitmq-vs
+  namespace: istio-system
+spec:
+  hosts:
+  - "rabbitmq.cwang.one"
+  gateways:
+  - gke-gateway
+  http:
+  - route:
+    - destination:
+        host: rabbitmq.rabbitmq.svc.cluster.local
+        port:
+          number: 15672
