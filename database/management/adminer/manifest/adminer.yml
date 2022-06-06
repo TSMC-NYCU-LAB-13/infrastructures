@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adminer
+  namespace: mariadb-galera
+  labels:
+    app: adminer
+spec:
+  selector:
+    matchLabels:
+      app: adminer
+  template:
+    metadata:
+      labels:
+        app: adminer
+        sidecar.istio.io/inject: "true"
+    spec:
+      containers:
+        - name: adminer
+          image: adminer:4.8.1
+          ports:
+            - containerPort: 8080
+          env:
+            - name: ADMINER_DESIGN
+              value: "dracula"
+            - name: ADMINER_PLUGINS
+              value: "dump-alter dump-date dump-json dump-zip edit-foreign file-upload foreign-system json-column sql-log struct-comments tables-filter tinymce"
+            - name: ADMINER_DEFAULT_SERVER
+              value: "mariadb-galera.mariadb-galera.svc.cluster.local"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: adminer
+  namespace: mariadb-galera
+spec:
+  selector:
+    app: adminer
+  ports:
+    - name: http-adminer
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
