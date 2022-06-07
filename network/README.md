@@ -12,6 +12,16 @@
     helm pull --untar --version 1.13.4 istio/istiod
     helm pull --untar --version 1.13.4 istio/gateway
     ```
+
+- oauth2-proxy
+
+    ```sh
+    cd network
+    helm repo add oauth2-proxy https://oauth2-proxy.github.io/manifests
+    helm repo update
+    helm pull --untar --version 6.2.1 oauth2-proxy/oauth2-proxy
+    ```
+
 <!-- 
 - kiali
 
@@ -44,6 +54,13 @@
     ```sh
     cd network/istio/gateway
     helm upgrade --create-namespace --install -n istio-system istio-ingress . -f my-values.yaml
+    ```
+
+- oauth2-proxy/oauth2-proxy
+
+    ```sh
+    cd network/oauth2-proxy
+    helm upgrade --create-namespace --install -n oauth2-proxy oauth2-proxy . -f my-values.yaml
     ```
 
 <!-- 
