@@ -647,6 +647,6 @@ configs:
       url: ssh://git@github.com/TSMC-NYCU-LAB-13/infrastructures.git
 
   credentialTemplates:
-    infrastructures:
+    tsmc-nycu-lab-13:
       url: ssh://git@github.com/TSMC-NYCU-LAB-13
       # sshPrivateKey: |
