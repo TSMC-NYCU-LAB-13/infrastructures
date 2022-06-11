@@ -193,6 +193,24 @@ server:
         selfHeal: true
         allowEmpty: false
 
+  - name: argocd-image-updater
+    namespace: argocd
+    project: tsmc-nycu-lab-13
+    source:
+      repoURL: ssh://git@github.com/TSMC-NYCU-LAB-13/infrastructures.git
+      targetRevision: HEAD
+      path: argo/argocd-image-updater
+      helm:
+        valueFiles:
+        - my-values.yaml
+    destination:
+      server: https://kubernetes.default.svc
+      namespace: argocd
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
+        allowEmpty: false
 
   - name: kube-prometheus-stack
     namespace: argocd
