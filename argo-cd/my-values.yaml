@@ -528,6 +528,8 @@ server:
       server: https://kubernetes.default.svc
     - namespace: "rabbitmq"
       server: https://kubernetes.default.svc
+    - namespace: "tsmc-nycu-lab-13"
+      server: https://kubernetes.default.svc
     - namespace: "kube-system"
       server: https://kubernetes.default.svc
     clusterResourceWhitelist:
