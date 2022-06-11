@@ -150,7 +150,7 @@ server:
     namespace: argocd
     project: tsmc-nycu-lab-13
     source:
-      repoURL: https://github.com/TSMC-NYCU-LAB-13/infrastructures.git
+      repoURL: ssh://git@github.com/TSMC-NYCU-LAB-13/infrastructures.git
       targetRevision: HEAD
       path: argo/argo-cd
       helm:
@@ -178,7 +178,7 @@ server:
     namespace: argocd
     project: tsmc-nycu-lab-13
     source:
-      repoURL: https://github.com/TSMC-NYCU-LAB-13/infrastructures.git
+      repoURL: ssh://git@github.com/TSMC-NYCU-LAB-13/infrastructures.git
       targetRevision: HEAD
       path: monitoring/prometheus/kube-prometheus-stack
       helm:
@@ -203,7 +203,7 @@ server:
     namespace: argocd
     project: tsmc-nycu-lab-13
     source:
-      repoURL: https://github.com/TSMC-NYCU-LAB-13/infrastructures.git
+      repoURL: ssh://git@github.com/TSMC-NYCU-LAB-13/infrastructures.git
       targetRevision: HEAD
       path: monitoring/tracing/jaeger
       helm:
@@ -225,7 +225,7 @@ server:
     namespace: argocd
     project: tsmc-nycu-lab-13
     source:
-      repoURL: https://github.com/TSMC-NYCU-LAB-13/infrastructures.git
+      repoURL: ssh://git@github.com/TSMC-NYCU-LAB-13/infrastructures.git
       targetRevision: HEAD
       path: monitoring/kiali-operator
       helm:
@@ -247,7 +247,7 @@ server:
     namespace: argocd
     project: tsmc-nycu-lab-13
     source:
-      repoURL: https://github.com/TSMC-NYCU-LAB-13/infrastructures.git
+      repoURL: ssh://git@github.com/TSMC-NYCU-LAB-13/infrastructures.git
       targetRevision: HEAD
       path: network/istio/base
       helm:
@@ -276,7 +276,7 @@ server:
     namespace: argocd
     project: tsmc-nycu-lab-13
     source:
-      repoURL: https://github.com/TSMC-NYCU-LAB-13/infrastructures.git
+      repoURL: ssh://git@github.com/TSMC-NYCU-LAB-13/infrastructures.git
       targetRevision: HEAD
       path: network/istio/istiod
       helm:
@@ -298,7 +298,7 @@ server:
     namespace: argocd
     project: tsmc-nycu-lab-13
     source:
-      repoURL: https://github.com/TSMC-NYCU-LAB-13/infrastructures.git
+      repoURL: ssh://git@github.com/TSMC-NYCU-LAB-13/infrastructures.git
       targetRevision: HEAD
       path: network/istio/gateway
       helm:
@@ -320,7 +320,7 @@ server:
     namespace: argocd
     project: tsmc-nycu-lab-13
     source:
-      repoURL: https://github.com/TSMC-NYCU-LAB-13/infrastructures.git
+      repoURL: ssh://git@github.com/TSMC-NYCU-LAB-13/infrastructures.git
       targetRevision: HEAD
       path: cert-manager/cert-manager
       helm:
@@ -349,7 +349,7 @@ server:
     namespace: argocd
     project: tsmc-nycu-lab-13
     source:
-      repoURL: https://github.com/TSMC-NYCU-LAB-13/infrastructures.git
+      repoURL: ssh://git@github.com/TSMC-NYCU-LAB-13/infrastructures.git
       targetRevision: HEAD
       path: database/mariadb-galera
       helm:
@@ -371,7 +371,7 @@ server:
     namespace: argocd
     project: tsmc-nycu-lab-13
     source:
-      repoURL: https://github.com/TSMC-NYCU-LAB-13/infrastructures.git
+      repoURL: ssh://git@github.com/TSMC-NYCU-LAB-13/infrastructures.git
       targetRevision: HEAD
       path: queue/rabbitmq
       helm:
@@ -393,7 +393,7 @@ server:
     namespace: argocd
     project: tsmc-nycu-lab-13
     source:
-      repoURL: https://github.com/TSMC-NYCU-LAB-13/infrastructures.git
+      repoURL: ssh://git@github.com/TSMC-NYCU-LAB-13/infrastructures.git
       targetRevision: HEAD
       path: monitoring/loki-stack
       helm:
@@ -415,7 +415,7 @@ server:
     namespace: argocd
     project: tsmc-nycu-lab-13
     source:
-      repoURL: https://github.com/TSMC-NYCU-LAB-13/infrastructures.git
+      repoURL: ssh://git@github.com/TSMC-NYCU-LAB-13/infrastructures.git
       targetRevision: HEAD
       path: monitoring/prometheus/manifest
       directory:
@@ -433,7 +433,7 @@ server:
     namespace: argocd
     project: tsmc-nycu-lab-13
     source:
-      repoURL: https://github.com/TSMC-NYCU-LAB-13/infrastructures.git
+      repoURL: ssh://git@github.com/TSMC-NYCU-LAB-13/infrastructures.git
       targetRevision: HEAD
       path: network/istio/manifest
       directory:
@@ -451,7 +451,7 @@ server:
     namespace: argocd
     project: tsmc-nycu-lab-13
     source:
-      repoURL: https://github.com/TSMC-NYCU-LAB-13/infrastructures.git
+      repoURL: ssh://git@github.com/TSMC-NYCU-LAB-13/infrastructures.git
       targetRevision: HEAD
       path: crawlab
       directory:
@@ -471,7 +471,7 @@ server:
     namespace: argocd
     project: tsmc-nycu-lab-13
     source:
-      repoURL: https://github.com/TSMC-NYCU-LAB-13/infrastructures.git
+      repoURL: ssh://git@github.com/TSMC-NYCU-LAB-13/infrastructures.git
       targetRevision: HEAD
       path: cert-manager/manifest
       directory:
@@ -489,7 +489,7 @@ server:
     namespace: argocd
     project: tsmc-nycu-lab-13
     source:
-      repoURL: https://github.com/TSMC-NYCU-LAB-13/infrastructures.git
+      repoURL: ssh://git@github.com/TSMC-NYCU-LAB-13/infrastructures.git
       targetRevision: HEAD
       path: database/management/adminer/manifest
       directory:
@@ -513,6 +513,7 @@ server:
     description: tsmc-nycu-lab-13's resources
     sourceRepos:
     - "https://github.com/TSMC-NYCU-LAB-13/infrastructures.git"
+    - "ssh://git@github.com/TSMC-NYCU-LAB-13/infrastructures.git"
     destinations:
     - namespace: "monitoring"
       server: https://kubernetes.default.svc
@@ -604,6 +605,10 @@ configs:
         vs-ssh.visualstudio.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7Hr1oTWqNqOlzGJOfGJ4NakVyIzf1rXYd4d7wo6jBlkLvCA4odBlL0mDUyZ0/QUfTTqeu+tm22gOsv+VrVTMk6vwRU75gY/y9ut5Mb3bR5BV58dKXyq9A9UeB5Cakehn5Zgm6x1mKoVyf+FFn26iYqXJRgzIZZcZ5V6hrE0Qg39kZm4az48o0AUbf6Sp4SLdvnuMa2sVNwHBboS7EJkm57XQPVU3/QpyNLHbWDdzwtrlS+ez30S3AdYhLKEOxAG8weOnyrtLJAUen9mTkol8oII1edf7mWWbWVf0nBmly21+nZcmCTISQBtdcyPaEno7fFQMDD26/s0lfKob4Kw8H
 
   repositories:
-    repo:
-      url: https://github.com/TSMC-NYCU-LAB-13/infrastructures.git
+    infrastructures:
+      url: ssh://git@github.com/TSMC-NYCU-LAB-13/infrastructures.git
 
+  credentialTemplates:
+    infrastructures:
+      url: ssh://git@github.com/TSMC-NYCU-LAB-13
+      # sshPrivateKey: |
