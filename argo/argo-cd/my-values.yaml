@@ -152,7 +152,7 @@ server:
     source:
       repoURL: https://github.com/TSMC-NYCU-LAB-13/infrastructures.git
       targetRevision: HEAD
-      path: argo-cd
+      path: argo/argo-cd
       helm:
         valueFiles:
         - my-values.yaml
