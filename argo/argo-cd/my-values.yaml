@@ -615,6 +615,30 @@ server:
     syncOptions: 
     - CreateNamespace=true
 
+  - name: crawler-kustomize
+    namespace: argocd
+    project: tsmc-nycu-lab-13
+    additionalAnnotations:
+      argocd-image-updater.argoproj.io/write-back-method: git
+      argocd-image-updater.argoproj.io/write-back-target: kustomization
+      argocd-image-updater.argoproj.io/image-list: crawler=quay.io/tsmc-nycu-lab-13/crawler
+      argocd-image-updater.argoproj.io/crawler.ignore-tags: latest
+      argocd-image-updater.argoproj.io/crawler.update-strategy: latest
+      argocd-image-updater.argoproj.io/crawler.allow-tags: regexp:^[0-9a-f]{7}$
+    source:
+      repoURL: ssh://git@github.com/TSMC-NYCU-LAB-13/crawler.git
+      targetRevision: deploy
+      path: kustomize-crawler
+    destination:
+      server: https://kubernetes.default.svc
+      namespace: tsmc-nycu-lab-13
+    syncPolicy:
+      automated:
+        prune: false
+        selfHeal: true
+    syncOptions: 
+    - CreateNamespace=true
+
   additionalProjects:
   - name: tsmc-nycu-lab-13
     namespace: argocd
@@ -627,6 +651,7 @@ server:
     - "ssh://git@github.com/TSMC-NYCU-LAB-13/frontend.git"
     - "ssh://git@github.com/TSMC-NYCU-LAB-13/backend.git"
     - "ssh://git@github.com/TSMC-NYCU-LAB-13/analysis.git"
+    - "ssh://git@github.com/TSMC-NYCU-LAB-13/crawler.git"
     destinations:
     - namespace: "monitoring"
       server: https://kubernetes.default.svc
@@ -726,6 +751,8 @@ configs:
       url: ssh://git@github.com/TSMC-NYCU-LAB-13/frontend.git
     analysis:
       url: ssh://git@github.com/TSMC-NYCU-LAB-13/analysis.git
+    crawler:
+      url: ssh://git@github.com/TSMC-NYCU-LAB-13/crawler.git
 
   credentialTemplates:
     tsmc-nycu-lab-13:
