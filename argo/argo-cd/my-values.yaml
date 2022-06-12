@@ -550,7 +550,7 @@ server:
       argocd-image-updater.argoproj.io/write-back-method: git
       argocd-image-updater.argoproj.io/write-back-target: kustomization
       argocd-image-updater.argoproj.io/image-list: frontend=quay.io/tsmc-nycu-lab-13/frontend
-      argocd-image-updater.argoproj.io/frontend.ignore-tags: latest
+      argocd-image-updater.argoproj.io/frontend.ignore-tags: latest, main, master
       argocd-image-updater.argoproj.io/frontend.update-strategy: latest
       argocd-image-updater.argoproj.io/frontend.allow-tags: regexp:^[0-9a-f]{7}$
     source:
@@ -574,7 +574,7 @@ server:
       argocd-image-updater.argoproj.io/write-back-method: git
       argocd-image-updater.argoproj.io/write-back-target: kustomization
       argocd-image-updater.argoproj.io/image-list: backend=quay.io/tsmc-nycu-lab-13/backend
-      argocd-image-updater.argoproj.io/backend.ignore-tags: latest
+      argocd-image-updater.argoproj.io/backend.ignore-tags: latest, main, master
       argocd-image-updater.argoproj.io/backend.update-strategy: latest
       argocd-image-updater.argoproj.io/backend.allow-tags: regexp:^[0-9a-f]{7}$
     source:
@@ -594,13 +594,13 @@ server:
   - name: analysis-kustomize
     namespace: argocd
     project: tsmc-nycu-lab-13
-    additionalAnnotations:
-      argocd-image-updater.argoproj.io/write-back-method: git
-      argocd-image-updater.argoproj.io/write-back-target: kustomization
-      argocd-image-updater.argoproj.io/image-list: analysis=quay.io/tsmc-nycu-lab-13/analysis
-      argocd-image-updater.argoproj.io/analysis.ignore-tags: latest
-      argocd-image-updater.argoproj.io/analysis.update-strategy: latest
-      argocd-image-updater.argoproj.io/analysis.allow-tags: regexp:^[0-9a-f]{7}$
+    # additionalAnnotations:
+    #   argocd-image-updater.argoproj.io/write-back-method: git
+    #   argocd-image-updater.argoproj.io/write-back-target: kustomization
+    #   argocd-image-updater.argoproj.io/image-list: analysis=quay.io/tsmc-nycu-lab-13/analysis
+    #   argocd-image-updater.argoproj.io/analysis.ignore-tags: latest, main, master
+    #   argocd-image-updater.argoproj.io/analysis.update-strategy: latest
+    #   argocd-image-updater.argoproj.io/analysis.allow-tags: regexp:^[0-9a-f]{7}$
     source:
       repoURL: ssh://git@github.com/TSMC-NYCU-LAB-13/analysis.git
       targetRevision: deploy
@@ -618,13 +618,13 @@ server:
   - name: crawler-kustomize
     namespace: argocd
     project: tsmc-nycu-lab-13
-    additionalAnnotations:
-      argocd-image-updater.argoproj.io/write-back-method: git
-      argocd-image-updater.argoproj.io/write-back-target: kustomization
-      argocd-image-updater.argoproj.io/image-list: crawler=quay.io/tsmc-nycu-lab-13/crawler
-      argocd-image-updater.argoproj.io/crawler.ignore-tags: latest
-      argocd-image-updater.argoproj.io/crawler.update-strategy: latest
-      argocd-image-updater.argoproj.io/crawler.allow-tags: regexp:^[0-9a-f]{7}$
+    # additionalAnnotations:
+    #   argocd-image-updater.argoproj.io/write-back-method: git
+    #   argocd-image-updater.argoproj.io/write-back-target: kustomization
+    #   argocd-image-updater.argoproj.io/image-list: crawler=quay.io/tsmc-nycu-lab-13/crawler
+    #   argocd-image-updater.argoproj.io/crawler.ignore-tags: latest, main, master
+    #   argocd-image-updater.argoproj.io/crawler.update-strategy: latest
+    #   argocd-image-updater.argoproj.io/crawler.allow-tags: regexp:^[0-9a-f]{7}$
     source:
       repoURL: ssh://git@github.com/TSMC-NYCU-LAB-13/crawler.git
       targetRevision: deploy
