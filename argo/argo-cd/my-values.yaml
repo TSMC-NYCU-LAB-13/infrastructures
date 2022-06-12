@@ -567,6 +567,30 @@ server:
     syncOptions: 
     - CreateNamespace=true
 
+  - name: backend-kustomize
+    namespace: argocd
+    project: tsmc-nycu-lab-13
+    additionalAnnotations:
+      argocd-image-updater.argoproj.io/write-back-method: git
+      argocd-image-updater.argoproj.io/write-back-target: kustomization
+      argocd-image-updater.argoproj.io/image-list: backend=quay.io/tsmc-nycu-lab-13/backend
+      argocd-image-updater.argoproj.io/backend.ignore-tags: latest
+      argocd-image-updater.argoproj.io/backend.update-strategy: latest
+      argocd-image-updater.argoproj.io/backend.allow-tags: regexp:^[0-9a-f]{7}$
+    source:
+      repoURL: ssh://git@github.com/TSMC-NYCU-LAB-13/backend.git
+      targetRevision: deploy
+      path: kustomize-backend
+    destination:
+      server: https://kubernetes.default.svc
+      namespace: tsmc-nycu-lab-13
+    syncPolicy:
+      automated:
+        prune: false
+        selfHeal: true
+    syncOptions: 
+    - CreateNamespace=true
+
   additionalProjects:
   - name: tsmc-nycu-lab-13
     namespace: argocd
@@ -577,6 +601,7 @@ server:
     - "https://github.com/TSMC-NYCU-LAB-13/infrastructures.git"
     - "ssh://git@github.com/TSMC-NYCU-LAB-13/infrastructures.git"
     - "ssh://git@github.com/TSMC-NYCU-LAB-13/frontend.git"
+    - "ssh://git@github.com/TSMC-NYCU-LAB-13/backend.git"
     destinations:
     - namespace: "monitoring"
       server: https://kubernetes.default.svc
@@ -671,6 +696,8 @@ configs:
     infrastructures:
       url: ssh://git@github.com/TSMC-NYCU-LAB-13/infrastructures.git
     frontend:
+      url: ssh://git@github.com/TSMC-NYCU-LAB-13/frontend.git
+    backend:
       url: ssh://git@github.com/TSMC-NYCU-LAB-13/frontend.git
 
   credentialTemplates:
