@@ -5,6 +5,6 @@ metadata:
   namespace: istio-system
 spec:
   host: argo-rollouts-dashboard.argocd.svc.cluster.local
-  trafficPolicy:
-    tls:
-      mode: DISABLE
+  # trafficPolicy:
+  #   tls:
+  #     mode: DISABLE

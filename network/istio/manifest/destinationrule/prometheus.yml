@@ -5,6 +5,6 @@ metadata:
   namespace: istio-system
 spec:
   host: kube-prometheus-stack-prometheus.monitoring.svc.cluster.local
-  trafficPolicy:
-    tls:
-      mode: DISABLE
+  # trafficPolicy:
+  #   tls:
+  #     mode: DISABLE

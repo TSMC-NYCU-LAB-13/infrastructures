@@ -5,6 +5,6 @@ metadata:
   namespace: istio-system
 spec:
   host: adminer.mariadb-galera.svc.cluster.local
-  trafficPolicy:
-    tls:
-      mode: DISABLE
+  # trafficPolicy:
+  #   tls:
+  #     mode: DISABLE

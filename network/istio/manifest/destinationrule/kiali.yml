@@ -6,6 +6,6 @@ metadata:
 spec:
   # host: kiali.istio-system.svc.cluster.local
   host: kiali.monitoring.svc.cluster.local
-  trafficPolicy:
-    tls:
-      mode: DISABLE
+  # trafficPolicy:
+  #   tls:
+  #     mode: DISABLE
