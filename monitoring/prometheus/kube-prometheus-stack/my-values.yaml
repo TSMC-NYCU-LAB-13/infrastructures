@@ -669,6 +669,14 @@ grafana:
   enabled: true
   namespaceOverride: ""
 
+  persistence:
+    type: pvc
+    enabled: true
+    storageClassName: standard-rwo
+
+  imageRenderer:
+    enabled: true
+
   podLabels: 
     sidecar.istio.io/inject: "true"
     app: "kube-prometheus-stack-grafana"
